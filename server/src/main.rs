@@ -51,8 +51,12 @@ fn main() {
                 handlers::notes::get,
                 handlers::notes::post,
                 handlers::notes::put,
-                handlers::notes::delete
+                handlers::notes::delete,
             ],
+        )
+        .mount(
+            "/categories",
+            routes![handlers::category::all, handlers::category::get,],
         )
         .mount("/auth", routes![handlers::auth::login])
         .attach(handlers::catch_not_json());

@@ -11,6 +11,7 @@ use serde::Serialize;
 use std::io::Cursor;
 
 pub mod auth;
+pub mod category;
 pub mod jwt;
 pub mod notes;
 

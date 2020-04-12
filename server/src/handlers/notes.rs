@@ -1,8 +1,8 @@
 use crate::handlers::jwt::JWTKey;
 use crate::handlers::{status_error, ApiResponse, StatusError};
-use crate::models::note::{NoteIn, NoteOut};
 
-use rnotes_core::models::note::{NewNote, Note};
+use rnotes_core::models::api::note::{NoteIn, NoteOut};
+use rnotes_core::models::db::note::{NewNote, Note};
 use rnotes_core::DBConn;
 
 use rocket::http::Status;

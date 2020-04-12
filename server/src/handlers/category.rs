@@ -1,8 +1,8 @@
 use crate::handlers::jwt::JWTKey;
 use crate::handlers::{status_error, ApiResponse, StatusError};
-use crate::models::category::CategoryOut;
 
-use rnotes_core::models::category::Category;
+use rnotes_core::models::api::category::CategoryOut;
+use rnotes_core::models::db::category::Category;
 use rnotes_core::DBConn;
 
 use rocket::http::Status;

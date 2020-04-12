@@ -1,4 +1,4 @@
-use rnotes_core::models::note::{NewNote, Note};
+use crate::models::db::note::{NewNote, Note};
 
 use chrono::offset::Utc;
 use chrono::DateTime;

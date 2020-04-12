@@ -4,25 +4,12 @@ use rocket_contrib::json::Json;
 use crypto::sha2::Sha256;
 use jwt::{Header, Registered, Token};
 
-use rnotes_core::models::user::User as DBUser;
+use rnotes_core::models::api::auth::{LoginIn, LoginOut};
+use rnotes_core::models::db::user::User as DBUser;
 use rnotes_core::DBConn;
 
-#[derive(Serialize, Deserialize)]
-pub struct LoginRequest {
-    email: String,
-    password: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct LoginResponse {
-    jwt_token: String,
-}
-
 #[post("/login", data = "<request>")]
-pub fn login<'r>(
-    request: Json<LoginRequest>,
-    connection: DBConn,
-) -> Result<Json<LoginResponse>, Status> {
+pub fn login<'r>(request: Json<LoginIn>, connection: DBConn) -> Result<Json<LoginOut>, Status> {
     let header: Header = Default::default();
 
     let email = request.email.clone();
@@ -45,7 +32,7 @@ pub fn login<'r>(
             token
                 .signed(&super::jwt::get_secret_key(), Sha256::new())
                 .map(|jwt_token| {
-                    Json(LoginResponse {
+                    Json(LoginOut {
                         jwt_token: jwt_token,
                     })
                 })

@@ -1,7 +1,7 @@
 extern crate dotenv;
 extern crate rnotes_core;
 
-use rnotes_core::models::note::*;
+use rnotes_core::models::db::note::*;
 use rnotes_core::utils::eq_no_ord;
 use rnotes_core::BDPool;
 

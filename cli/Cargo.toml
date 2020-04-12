@@ -1,5 +1,5 @@
 [package]
-name = "rnotes-core"
+name = "rnotes_cli"
 version = "0.3.0"
 authors = ["Alvaro Santos Andres <alvsanand@gmail.com>"]
 edition = "2018"
@@ -9,13 +9,19 @@ chrono = "0.4"
 clap = "2.33"
 diesel = { version = "1.4", features = ["postgres", "r2d2"] }
 dotenv = "0.15"
+jwt = "0.4"
+hyper = { version = "0.10.13", default-features = false }
 log = "0.4"
 r2d2 = "0.8"
 regex = "1.3"
 rocket = "0.4"
+rocket_contrib = "0.4"
+rust-crypto = "0.2"
 rustc-serialize = "0.3"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
+
+rnotes-server = { path = "../core" }
 
 [dev_dependencies]

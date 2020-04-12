@@ -1,4 +1,4 @@
-use rnotes_core::models::category::Category;
+use crate::models::db::category::Category;
 
 use chrono::offset::Utc;
 use chrono::DateTime;

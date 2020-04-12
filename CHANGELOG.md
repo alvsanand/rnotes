@@ -9,11 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - No new changes at the moment
 
+## [0.3.0] - 12-04-2020
+
+### Changed
+
+- Refactorized server code.
+
 ## [0.2.0] - 11-04-2020
 
 ### Added
 
-- Dedault DB data.
+- Default DB data.
 - REST API for categories.
 
 ## [0.1.0] - 11-04-2020

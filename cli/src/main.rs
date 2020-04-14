@@ -1,63 +1,32 @@
 #![feature(proc_macro_hygiene, decl_macro)]
-extern crate chrono;
-extern crate crypto;
+extern crate clap;
+extern crate dirs;
 extern crate dotenv;
-extern crate jwt;
-#[macro_use]
+extern crate rnotes_core;
 extern crate rocket;
 extern crate rocket_contrib;
-#[macro_use]
+extern crate rustyline;
+extern crate rustyline_derive;
 extern crate serde_derive;
-extern crate rnotes_core;
-extern crate rnotes_server;
+extern crate structopt;
 
-mod handlers;
-mod utils;
+mod cmd;
+mod run;
+mod ui;
 
-use dotenv::dotenv;
-use rnotes_core::BDPool;
-use rocket::config::{Config, Environment};
-use std::env;
+use structopt::StructOpt;
 
-#[get("/")]
-fn index() -> &'static str {
-    "rnotes server!"
+#[derive(StructOpt, Debug)]
+#[structopt(name = "rnotes_cli")]
+/// rnotes command line client
+struct CLIOpt {
+    /// {HOSTNAME}:{PORT} of rnotes server
+    #[structopt(name = "SERVER", default_value = "localhost:8080")]
+    server: String,
 }
 
 fn main() {
-    dotenv().ok();
+    let _opt = CLIOpt::from_args();
 
-    let host = env::var("ROCKET_ADDRESS").expect("ROCKET_ADDRESS must be set");
-    let port = env::var("ROCKET_PORT")
-        .expect("ROCKET_PORT must be set")
-        .parse::<u16>()
-        .expect("ROCKET_PORT must be integer");
-
-    let config = Config::build(Environment::Staging)
-        .address(host)
-        .port(port)
-        .finalize()
-        .unwrap();
-
-    let rocket = rocket::custom(config)
-        .manage(BDPool::new().expect("Cannot obtain BDPool"))
-        .mount("/", routes![index])
-        .mount(
-            "/notes",
-            routes![
-                handlers::notes::all,
-                handlers::notes::get,
-                handlers::notes::post,
-                handlers::notes::put,
-                handlers::notes::delete,
-            ],
-        )
-        .mount(
-            "/categories",
-            routes![handlers::category::all, handlers::category::get,],
-        )
-        .mount("/auth", routes![handlers::auth::login])
-        .attach(handlers::catch_not_json());
-
-    rocket.launch();
+    ui::ui_loop();
 }

@@ -5,7 +5,7 @@ use chrono::DateTime;
 
 use std::convert::From;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CategoryOut {
     pub id: i32,
     pub name: String,

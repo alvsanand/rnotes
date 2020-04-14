@@ -21,6 +21,20 @@
         {
             "type": "lldb",
             "request": "launch",
+            "name": "Debug rnotes_cli",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--package=rnotes_cli"
+                ],
+            },
+            "args": [
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
             "name": "Debug unit tests in library 'rnotes_core'",
             "cargo": {
                 "args": [

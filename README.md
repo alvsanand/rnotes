@@ -7,6 +7,13 @@ Simple Notes service written in Rust
 ### Requisites
 
 - Rust nightly
+
+        ``` bash
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        rustup override set nightly-2020-03-01
+        rustup component add rls rust-analysis rust-src
+        ```
+
 - Cargo
 - Docker & Docker Compose
 

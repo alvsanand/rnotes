@@ -6,7 +6,7 @@ use chrono::DateTime;
 use std::convert::{From, Into};
 use std::time::SystemTime;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NoteOut {
     pub id: i32,
     pub category_id: Option<i32>,
@@ -29,20 +29,20 @@ impl From<&Note> for NoteOut {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct NoteIn<'a> {
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NoteIn {
     pub category_id: Option<i32>,
-    pub title: &'a str,
-    pub data: &'a str,
+    pub title: String,
+    pub data: String,
 }
 
-impl<'a> Into<NewNote<'a>> for NoteIn<'a> {
-    fn into(self) -> NewNote<'a> {
-        NewNote::new(0, self.category_id, self.title, self.data)
+impl Into<NewNote> for NoteIn {
+    fn into(self) -> NewNote {
+        NewNote::new(0, self.category_id, self.title.clone(), self.data.clone())
     }
 }
 
-impl<'a> Into<Note> for NoteIn<'a> {
+impl Into<Note> for NoteIn {
     fn into(self) -> Note {
         Note {
             id: 0,

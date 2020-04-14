@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.3.0] - 12-04-2020
 
+### Added
+
+- Shell CLI.
+
 ### Changed
 
 - Refactorized server code.

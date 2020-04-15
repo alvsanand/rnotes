@@ -250,18 +250,18 @@ struct NotesDeleteOpt {
     id: i32,
 }
 
-pub fn parse_command<'a>(_tokens: &Vec<&str>) -> Result<Command, Error> {
+pub fn parse_command(_tokens: Vec<String>) -> Result<Command, Error> {
     if _tokens.len() == 0 {
         return Ok(Command::Nothing);
     }
-    let service = _tokens[0];
+    let service = _tokens[0].clone();
     let command = if _tokens.len() > 1 {
-        Some(_tokens[1])
+        Some(_tokens[1].clone())
     } else {
         None
     };
 
-    let mut tokens = vec!["cmd"];
+    let mut tokens = vec!["cmd".to_string()];
     tokens.extend(_tokens);
 
     match MainOpt::from_iter_safe(tokens.clone()) {

@@ -21,15 +21,15 @@ Simple Notes service written in Rust
 
 - Start
 
-``` bash
-docker-compose up -d
-```
+        ``` bash
+        docker-compose up -d
+        ```
 
 - Delete
 
-``` bash
-docker-compose down -v
-```
+        ``` bash
+        docker-compose down -v
+        ```
 
 ## Usage
 
@@ -37,41 +37,41 @@ docker-compose down -v
 
 - Login
 
-``` bash
-TOKEN=$(curl -Ss -d '{
-    "email": "user_a@email.com",
-    "password": "1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b"
-}' http://127.0.0.1:8080/auth/login | jq -r '.jwt_token')
-```
+        ``` bash
+        TOKEN=$(curl -Ss -d '{
+            "email": "user_a@email.com",
+            "password": "1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B"
+        }'  --header "Content-Type: application/json" http://127.0.0.1:8080/auth/login | jq -r '.jwt_token')
+        ```
 
 - Get all notes of the user
 
-``` bash
-curl -vSs -H "Authorization: Bearer ${TOKEN}" http://127.0.0.1:8080/notes
-```
+        ``` bash
+        curl -vSs -H "Authorization: Bearer ${TOKEN}" http://127.0.0.1:8080/notes
+        ```
 
 - Create a note
 
-``` bash
-curl -Ss -v -H "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{
-  "category_id": null,
-  "title": "note_XXX_user_a",
-  "data": "some_text_note_XXX_user_a"
-}' http://127.0.0.1:8080/notes | jq
-```
+        ``` bash
+        curl -Ss -v -H "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{
+        "category_id": null,
+        "title": "note_XXX_user_a",
+        "data": "some_text_note_XXX_user_a"
+        }' http://127.0.0.1:8080/notes | jq
+        ```
 
 - Get a note
 
-``` bash
-curl -Ss -v -H "Authorization: Bearer ${TOKEN}" http://127.0.0.1:8080/notes/{NOTE_ID} | jq
-```
+        ``` bash
+        curl -Ss -v -H "Authorization: Bearer ${TOKEN}" http://127.0.0.1:8080/notes/{NOTE_ID} | jq
+        ```
 
 - Update a note
 
-``` bash
-curl -Ss -v -X PUT -H "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{
-  "category_id": null,
-  "title": "note_XXX_user_a_other",
-  "data": "some_text_note_XXX_user_a_other"
-}' http://127.0.0.1:8080/notes/{NOTE_ID} | jq
-```
+        ``` bash
+        curl -Ss -v -X PUT -H "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{
+        "category_id": null,
+        "title": "note_XXX_user_a_other",
+        "data": "some_text_note_XXX_user_a_other"
+        }' http://127.0.0.1:8080/notes/{NOTE_ID} | jq
+        ```

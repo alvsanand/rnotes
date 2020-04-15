@@ -1,5 +1,5 @@
 use crate::cmd::*;
-use crate::run::run_command;
+use crate::run::Runner;
 use dirs;
 use rustyline::completion::Completer;
 use rustyline::config::CompletionType;
@@ -7,6 +7,7 @@ use rustyline::error::ReadlineError;
 use rustyline::{hint::Hinter, Context};
 use rustyline::{Cmd, Config, Editor, KeyPress};
 use rustyline_derive::{Helper, Highlighter, Validator};
+use shell_words;
 use std::collections::HashSet;
 
 #[derive(Helper, Validator, Highlighter)]
@@ -61,7 +62,7 @@ impl Hinter for CmdHelper {
     }
 }
 
-pub fn ui_loop() {
+pub async fn ui_loop(runner: &mut Runner) {
     let ref history_file = format!(
         "{}/.rnotes_cli.history",
         dirs::home_dir().unwrap().to_str().unwrap()
@@ -87,7 +88,7 @@ pub fn ui_loop() {
                 match parse_line(&line) {
                     Ok(Command::Nothing) => (),
                     Ok(cmd) => {
-                        run_command(cmd);
+                        runner.run(cmd).await;
                     }
                     Err(Error::Exit) => {
                         break;
@@ -118,7 +119,8 @@ pub fn ui_loop() {
 }
 
 fn parse_line(buf: &String) -> Result<Command, Error> {
-    let tokens: Vec<&str> = buf.trim().split_whitespace().collect();
+    let tokens = shell_words::split(&buf)
+        .map_err(|_| Error::Parse(format!("Error parsing line: {}", buf.trim())))?;
 
-    parse_command(&tokens)
+    parse_command(tokens)
 }

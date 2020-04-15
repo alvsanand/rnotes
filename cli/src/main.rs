@@ -2,15 +2,17 @@
 extern crate clap;
 extern crate dirs;
 extern crate dotenv;
+extern crate hyper;
 extern crate rnotes_core;
-extern crate rocket;
-extern crate rocket_contrib;
 extern crate rustyline;
 extern crate rustyline_derive;
 extern crate serde_derive;
+extern crate sha2;
 extern crate structopt;
+extern crate tokio;
 
 mod cmd;
+mod http_client;
 mod run;
 mod ui;
 
@@ -20,13 +22,17 @@ use structopt::StructOpt;
 #[structopt(name = "rnotes_cli")]
 /// rnotes command line client
 struct CLIOpt {
-    /// {HOSTNAME}:{PORT} of rnotes server
-    #[structopt(name = "SERVER", default_value = "localhost:8080")]
+    /// http://{HOSTNAME}:{PORT} of rnotes server
+    #[structopt(name = "SERVER", default_value = "http://localhost:8080")]
     server: String,
 }
 
-fn main() {
-    let _opt = CLIOpt::from_args();
+#[tokio::main]
+async fn main() {
+    let opt = CLIOpt::from_args();
 
-    ui::ui_loop();
+    let client = http_client::HttpClient::new();
+    let mut runner = run::Runner::new(opt.server, client);
+
+    ui::ui_loop(&mut runner).await;
 }

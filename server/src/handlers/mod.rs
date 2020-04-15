@@ -10,6 +10,8 @@ use rocket_contrib::json::*;
 use serde::Serialize;
 use std::io::Cursor;
 
+use rnotes_core::models::api::Error;
+
 pub mod auth;
 pub mod category;
 pub mod jwt;
@@ -21,14 +23,14 @@ pub fn catch_not_json() -> AdHoc {
             && ContentType::parse_flexible(res.headers().get_one("Content-Type").unwrap())
                 != Some(ContentType::JSON)
         {
-            let string_error: StringError = StringError::new(res.status(), res.status().reason);
+            let string_error: Error =
+                Error::new(res.status().code, res.status().reason.to_string());
 
             let json = serde_json::to_string(&string_error).unwrap();
             let content_length = json.len() as u64;
 
             res.set_header(ContentLength(content_length));
             res.set_sized_body(Cursor::new(json));
-            res.set_status(res.status());
         }
     })
 }
@@ -45,25 +47,10 @@ pub fn json_response<'a, T: Serialize>(t: &T, status: Status) -> Response<'a> {
         .finalize()
 }
 
-#[derive(Serialize)]
-struct StringError<'a> {
-    error: u16,
-    detail: &'a str,
-}
-
-impl<'a> StringError<'a> {
-    pub fn new(status: Status, error: &'a str) -> Self {
-        StringError {
-            error: status.code,
-            detail: error,
-        }
-    }
-}
-
 pub type StatusError<'a> = Response<'a>;
 
-pub fn status_error<'a, 'r>(status: Status, error: &'a str) -> StatusError<'r> {
-    let string_error: StringError<'a> = StringError::new(status, error);
+pub fn status_error<'r>(status: Status, error: String) -> StatusError<'r> {
+    let string_error: Error = Error::new(status.code, error);
 
     json_response(&string_error, status)
 }

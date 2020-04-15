@@ -15,7 +15,7 @@ pub fn all<'r>(
 ) -> Result<ApiResponse<Vec<NoteOut>>, StatusError<'r>> {
     Note::find_by_user_id(&connection, key.id_user)
         .map(|all| ApiResponse::ok(all.iter().map(|note| NoteOut::from(note)).collect()))
-        .map_err(|err| status_error(Status::NotFound, &format!("Cannot find notes: {}", err)))
+        .map_err(|err| status_error(Status::NotFound, format!("Cannot find notes: {}", err)))
 }
 
 #[get("/<id>")]
@@ -26,7 +26,7 @@ pub fn get<'r>(
 ) -> Result<ApiResponse<NoteOut>, StatusError<'r>> {
     Note::find_by_id_and_user_id(&connection, id, key.id_user)
         .map(|note| ApiResponse::ok(NoteOut::from(&note)))
-        .map_err(|err| status_error(Status::NotFound, &format!("Note is not correct: {}", err)))
+        .map_err(|err| status_error(Status::NotFound, format!("Note is not correct: {}", err)))
 }
 
 #[post("/", format = "application/json", data = "<note_in>")]
@@ -40,7 +40,7 @@ pub fn post<'r>(
     new_note
         .create(&connection)
         .map(|note| ApiResponse::new(NoteOut::from(&note), Status::Created))
-        .map_err(|err| status_error(Status::BadRequest, &format!("Note is not correct: {}", err)))
+        .map_err(|err| status_error(Status::BadRequest, format!("Note is not correct: {}", err)))
 }
 
 #[put("/<id>", format = "application/json", data = "<note_in>")]
@@ -51,7 +51,7 @@ pub fn put<'r>(
     note_in: Json<NoteIn>,
 ) -> Result<ApiResponse<NoteOut>, StatusError<'r>> {
     Note::find_by_id_and_user_id(&connection, id, key.id_user)
-        .map_err(|err| status_error(Status::NotFound, &format!("Note is not correct: {}", err)))
+        .map_err(|err| status_error(Status::NotFound, format!("Note is not correct: {}", err)))
         .and_then(|_| {
             let mut note: Note = NoteIn::into(note_in.0);
             note.id = id;
@@ -59,7 +59,7 @@ pub fn put<'r>(
             Note::update(&connection, &note)
                 .map(|note| ApiResponse::new(NoteOut::from(&note), Status::Created))
                 .map_err(|err| {
-                    status_error(Status::BadRequest, &format!("Note is not correct: {}", err))
+                    status_error(Status::BadRequest, format!("Note is not correct: {}", err))
                 })
         })
 }

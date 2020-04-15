@@ -1,21 +1,24 @@
-use rocket::http::Status;
-use rocket_contrib::json::Json;
-
+use crate::handlers::{status_error, ApiResponse, StatusError};
 use crypto::sha2::Sha256;
 use jwt::{Header, Registered, Token};
-
 use rnotes_core::models::api::auth::{LoginIn, LoginOut};
 use rnotes_core::models::db::user::User as DBUser;
 use rnotes_core::DBConn;
+use rocket::http::Status;
+use rocket_contrib::json::Json;
 
-#[post("/login", data = "<request>")]
-pub fn login<'r>(request: Json<LoginIn>, connection: DBConn) -> Result<Json<LoginOut>, Status> {
+#[post("/login", format = "application/json", data = "<request>")]
+pub fn login<'r>(
+    request: Json<LoginIn>,
+    connection: DBConn,
+) -> Result<ApiResponse<LoginOut>, StatusError<'r>> {
     let header: Header = Default::default();
 
     let email = request.email.clone();
     let password = request.password.clone();
-    match DBUser::find_by_email_and_password(&connection, email, password) {
-        Ok(user) => {
+    DBUser::find_by_email_and_password(&connection, email, password)
+        .map_err(|_| status_error(Status::NotFound, format!("Invalid credentials")))
+        .and_then(|user| {
             let now = std::time::SystemTime::now()
                 .duration_since(std::time::SystemTime::UNIX_EPOCH)
                 .unwrap()
@@ -32,12 +35,12 @@ pub fn login<'r>(request: Json<LoginIn>, connection: DBConn) -> Result<Json<Logi
             token
                 .signed(&super::jwt::get_secret_key(), Sha256::new())
                 .map(|jwt_token| {
-                    Json(LoginOut {
+                    ApiResponse::ok(LoginOut {
                         jwt_token: jwt_token,
                     })
                 })
-                .map_err(|_| Status::InternalServerError)
-        }
-        _ => Err(Status::NotFound),
-    }
+                .map_err(|_| {
+                    status_error(Status::InternalServerError, format!("Unknown server error."))
+                })
+        })
 }

@@ -7,7 +7,6 @@ extern crate jwt;
 #[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
-#[macro_use]
 extern crate serde_derive;
 extern crate rnotes_core;
 

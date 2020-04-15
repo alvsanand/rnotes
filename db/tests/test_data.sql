@@ -5,21 +5,21 @@ VALUES
   (
     'user_a@email.com',
     'user_a',
-    '1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b'
+    '1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B' --   some_password
   );
 INSERT INTO users (email, name, password)
 VALUES
   (
     'user_b@email.com',
     'user_b',
-    '1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b'
+    '1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B'
   );
 INSERT INTO users (email, name, password)
 VALUES
   (
     'user_c@email.com',
     'user_c',
-    '1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b'
+    '1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B'
   );
 INSERT INTO categories (name)
 VALUES

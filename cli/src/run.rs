@@ -162,7 +162,7 @@ impl Runner {
                         println!("{:?}", response);
                     }
                     Err(err) => {
-                        println!("Failed 'notes get {id}'. {err}", id = id, err = err);
+                        println!("Failed 'notes delete {id}'. {err}", id = id, err = err);
                     }
                 }
             }

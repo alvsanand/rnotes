@@ -1,0 +1,9 @@
+.*
+Cargo.lock
+config.json
+db
+docker-compose.yml
+Dockerfile
+makefile
+README.md
+target

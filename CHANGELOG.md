@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - More tests.
 - Logging configuration.
 - Shell CLI.
+- docker execution.
 
 ### Changed
 

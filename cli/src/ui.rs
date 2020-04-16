@@ -68,7 +68,7 @@ pub fn print_info() {
     println!("########################################################################");
     println!(
         "{}",
-        standard_font.convert("rnotes-cli").expect("Unknown error")
+        standard_font.convert("rnotes_cli").expect("Unknown error")
     );
     println!("########################################################################");
 }
@@ -92,7 +92,7 @@ pub async fn ui_loop(runner: &mut Runner) {
     rl.load_history(history_file).unwrap_or_default();
 
     loop {
-        let readline = rl.readline("rnotes-cli>> ");
+        let readline = rl.readline("rnotes_cli>> ");
         match readline {
             Ok(line) => {
                 rl.add_history_entry(line.as_str());

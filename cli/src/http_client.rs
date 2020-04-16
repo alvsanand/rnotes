@@ -100,7 +100,7 @@ impl HttpClient {
             return Err(HttpClientError::HTTPError(res.status(), "".to_string()));
         } else {
             if res.status().is_success() {
-                let res_obj: S = serde_json::from_str("")
+                let res_obj: S = serde_json::from_str("{}")
                     .map_err(|_| HttpClientError::InvalidResponseType("{}".to_string()))?;
 
                 return Ok(res_obj);
@@ -163,7 +163,7 @@ impl HttpClient {
             return Err(HttpClientError::HTTPError(res.status(), "".to_string()));
         } else {
             if res.status().is_success() {
-                let res_obj: S = serde_json::from_str("")
+                let res_obj: S = serde_json::from_str("{}")
                     .map_err(|_| HttpClientError::InvalidResponseType("{}".to_string()))?;
 
                 return Ok(res_obj);
@@ -217,7 +217,7 @@ impl HttpClient {
             return Err(HttpClientError::HTTPError(res.status(), "".to_string()));
         } else {
             if res.status().is_success() {
-                let res_obj: S = serde_json::from_str("")
+                let res_obj: S = serde_json::from_str("{}")
                     .map_err(|_| HttpClientError::InvalidResponseType("{}".to_string()))?;
 
                 return Ok(res_obj);
@@ -275,7 +275,7 @@ impl HttpClient {
             return Err(HttpClientError::HTTPError(res.status(), "".to_string()));
         } else {
             if res.status().is_success() {
-                let res_obj: S = serde_json::from_str("")
+                let res_obj: S = serde_json::from_str("{}")
                     .map_err(|_| HttpClientError::InvalidResponseType("{}".to_string()))?;
 
                 return Ok(res_obj);

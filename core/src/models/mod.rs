@@ -1,3 +1,2 @@
-pub mod category;
-pub mod note;
-pub mod user;
+pub mod api;
+pub mod db;

@@ -1,8 +1,6 @@
 use crate::schema::*;
-
 use diesel::prelude::*;
 use diesel::result::QueryResult;
-
 use std::cmp::Ordering;
 use std::time::SystemTime;
 
@@ -47,10 +45,7 @@ impl Category {
     pub fn update(connection: &PgConnection, obj: &Category) -> QueryResult<Category> {
         use crate::schema::categories::dsl::*;
         diesel::update(categories.find(obj.id))
-            .set((
-                name.eq(obj.name.clone()),
-                update_time.eq(SystemTime::now()),
-            ))
+            .set((name.eq(obj.name.clone()), update_time.eq(SystemTime::now())))
             .get_result(connection)
     }
 
@@ -68,9 +63,7 @@ pub struct NewCategory<'a> {
 
 impl<'a> NewCategory<'a> {
     pub fn new(name: &'a str) -> Self {
-        NewCategory {
-            name: name,
-        }
+        NewCategory { name: name }
     }
 
     pub fn create(&self, connection: &PgConnection) -> QueryResult<Category> {

@@ -15,28 +15,12 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - postgres
-    restart: unless-stopped
-
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-    volumes:
-      - pgadmin:/root/.pgadmin
-      - "./.pgadmin_servers.json:/pgadmin4/servers.json"
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - postgres
+      - rnotes
     restart: unless-stopped
 
 networks:
-  postgres:
+  rnotes:
     driver: bridge
 
 volumes:
   postgres:
-  pgadmin:

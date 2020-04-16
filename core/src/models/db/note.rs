@@ -86,17 +86,17 @@ impl Note {
     }
 }
 
-#[derive(Debug, Copy, Clone, Insertable)]
+#[derive(Debug, Clone, Insertable)]
 #[table_name = "notes"]
-pub struct NewNote<'a> {
+pub struct NewNote {
     pub user_id: i32,
     pub category_id: Option<i32>,
-    pub title: &'a str,
-    pub data: &'a str,
+    pub title: String,
+    pub data: String,
 }
 
-impl<'a> NewNote<'a> {
-    pub fn new(user_id: i32, category_id: Option<i32>, title: &'a str, data: &'a str) -> Self {
+impl NewNote {
+    pub fn new(user_id: i32, category_id: Option<i32>, title: String, data: String) -> Self {
         NewNote {
             user_id: user_id,
             category_id: category_id,

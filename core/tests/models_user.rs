@@ -1,7 +1,7 @@
 extern crate dotenv;
 extern crate rnotes_core;
 
-use rnotes_core::models::user::*;
+use rnotes_core::models::db::user::*;
 use rnotes_core::utils::eq_no_ord;
 use rnotes_core::BDPool;
 
@@ -26,7 +26,7 @@ fn test_user_find_all() {
             id: 1,
             email: "user_a@email.com".to_string(),
             name: "user_a".to_string(),
-            password: "1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b"
+            password: "1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B"
                 .to_string(),
             create_time: SystemTime::now(),
             update_time: SystemTime::now(),
@@ -35,7 +35,7 @@ fn test_user_find_all() {
             id: 2,
             email: "user_b@email.com".to_string(),
             name: "user_b".to_string(),
-            password: "1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b"
+            password: "1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B"
                 .to_string(),
             create_time: SystemTime::now(),
             update_time: SystemTime::now(),
@@ -44,7 +44,7 @@ fn test_user_find_all() {
             id: 3,
             email: "user_c@email.com".to_string(),
             name: "user_c".to_string(),
-            password: "1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b"
+            password: "1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B"
                 .to_string(),
             create_time: SystemTime::now(),
             update_time: SystemTime::now(),
@@ -66,7 +66,7 @@ fn test_user_find_by_id() {
         id: 1,
         email: "user_a@email.com".to_string(),
         name: "user_a".to_string(),
-        password: "1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b".to_string(),
+        password: "1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B".to_string(),
         create_time: SystemTime::now(),
         update_time: SystemTime::now(),
     };
@@ -82,7 +82,7 @@ fn test_user_find_by_email_and_password() {
     let result = User::find_by_email_and_password(
         &con,
         "user_a@email.com".to_string(),
-        "1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b".to_string(),
+        "1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B".to_string(),
     )
     .unwrap();
 
@@ -90,7 +90,7 @@ fn test_user_find_by_email_and_password() {
         id: 1,
         email: "user_a@email.com".to_string(),
         name: "user_a".to_string(),
-        password: "1464acd6765f91fccd3f5bf4f14ebb7ca69f53af91b0a5790c2bba9d8819417b".to_string(),
+        password: "1464ACD6765F91FCCD3F5BF4F14EBB7CA69F53AF91B0A5790C2BBA9D8819417B".to_string(),
         create_time: SystemTime::now(),
         update_time: SystemTime::now(),
     };

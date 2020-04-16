@@ -1,10 +1,8 @@
 use crate::handlers::jwt::JWTKey;
 use crate::handlers::{status_error, ApiResponse, StatusError};
-use crate::models::category::CategoryOut;
-
-use rnotes_core::models::category::Category;
+use rnotes_core::models::api::category::CategoryOut;
+use rnotes_core::models::db::category::Category;
 use rnotes_core::DBConn;
-
 use rocket::http::Status;
 
 #[get("/")]
@@ -23,7 +21,7 @@ pub fn all<'r>(
         .map_err(|err| {
             status_error(
                 Status::NotFound,
-                &format!("Cannot find categories: {}", err),
+                format!("Cannot find categories: {}", err),
             )
         })
 }
@@ -39,7 +37,7 @@ pub fn get<'r>(
         .map_err(|err| {
             status_error(
                 Status::NotFound,
-                &format!("Category is not correct: {}", err),
+                format!("Category is not correct: {}", err),
             )
         })
 }

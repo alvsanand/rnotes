@@ -1,7 +1,7 @@
 extern crate dotenv;
 extern crate rnotes_core;
 
-use rnotes_core::models::note::*;
+use rnotes_core::models::db::note::*;
 use rnotes_core::utils::eq_no_ord;
 use rnotes_core::BDPool;
 
@@ -59,7 +59,7 @@ fn test_note_find_all() {
 }
 
 #[test]
-fn test_note_find_by_id() {
+fn test_find_by_user_id() {
     let pool = BDPool::new().unwrap();
     let con = pool.get().unwrap();
 
@@ -157,8 +157,8 @@ fn test_note_insert() {
     let new_note = NewNote::new(
         1,
         Some(1),
-        "note_test_test_note_insert",
-        "some_text_note_test_note_insert",
+        "note_test_test_note_insert".to_string(),
+        "some_text_note_test_note_insert".to_string(),
     );
 
     let result = new_note.create(&con).unwrap();
@@ -189,8 +189,8 @@ fn test_note_delete() {
     let new_note = NewNote::new(
         1,
         Some(1),
-        "note_test_note_delete",
-        "some_text_note_test_note_delete",
+        "note_test_note_delete".to_string(),
+        "some_text_note_test_note_delete".to_string(),
     );
 
     let note = new_note.create(&con).unwrap();
@@ -211,8 +211,8 @@ fn test_note_update() {
     let new_note = NewNote::new(
         1,
         Some(1),
-        "note_test_note_update",
-        "some_text_note_test_note_update",
+        "note_test_note_update".to_string(),
+        "some_text_note_test_note_update".to_string(),
     );
 
     let mut note = new_note.create(&con).unwrap();

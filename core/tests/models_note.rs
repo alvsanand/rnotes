@@ -59,7 +59,7 @@ fn test_note_find_all() {
 }
 
 #[test]
-fn test_note_find_by_id() {
+fn test_find_by_user_id() {
     let pool = BDPool::new().unwrap();
     let con = pool.get().unwrap();
 

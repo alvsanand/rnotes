@@ -2,7 +2,7 @@ pub mod auth;
 pub mod category;
 pub mod note;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Error {
     error: u16,
     detail: String,
@@ -17,5 +17,5 @@ impl Error {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Empty {}

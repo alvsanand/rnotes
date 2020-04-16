@@ -16,6 +16,15 @@ pub struct NoteOut {
     pub update_time: String,
 }
 
+impl PartialEq for NoteOut {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+            && self.category_id == other.category_id
+            && self.title == other.title
+            && self.data == other.data
+    }
+}
+
 impl From<&Note> for NoteOut {
     fn from(note: &Note) -> Self {
         NoteOut {
@@ -29,7 +38,7 @@ impl From<&Note> for NoteOut {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NoteIn {
     pub category_id: Option<i32>,
     pub title: String,
@@ -53,5 +62,65 @@ impl Into<Note> for NoteIn {
             create_time: SystemTime::now(),
             update_time: SystemTime::now(),
         }
+    }
+}
+
+mod tests {
+    #[test]
+    fn test_note_in_into() {
+        use super::*;
+        use std::time::SystemTime;
+        let note_in = NoteIn {
+            category_id: Some(321),
+            title: "some_name".to_string(),
+            data: "some_data".to_string(),
+        };
+
+        let result: Note = NoteIn::into(note_in);
+
+        let mut expected = Note {
+            id: 0,
+            user_id: 0,
+            category_id: Some(321),
+            title: "some_name".to_string(),
+            data: "some_data".to_string(),
+            create_time: SystemTime::now(),
+            update_time: SystemTime::now(),
+        };
+        expected.create_time = result.create_time;
+        expected.create_time = result.create_time;
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_note_out_from() {
+        use super::*;
+        use std::time::SystemTime;
+
+        let time = SystemTime::now();
+        let str_time = DateTime::<Utc>::from(time).to_rfc3339();
+        let note = Note {
+            id: 12345,
+            user_id: 0,
+            category_id: Some(321),
+            title: "some_name".to_string(),
+            data: "some_data".to_string(),
+            create_time: time,
+            update_time: time,
+        };
+
+        let result = NoteOut::from(&note);
+
+        let expected = NoteOut {
+            id: 12345,
+            category_id: Some(321),
+            title: "some_name".to_string(),
+            data: "some_data".to_string(),
+            create_time: str_time.clone(),
+            update_time: str_time.clone(),
+        };
+
+        assert_eq!(result, expected);
     }
 }

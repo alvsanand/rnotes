@@ -1,50 +1,226 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug rnotes_server",
+            "name": "Debug executable 'rnotes_cli'",
             "cargo": {
                 "args": [
                     "build",
-                    "--package=rnotes_server"
-                ],
-            },
-            "args": [
-            ],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug rnotes_cli",
-            "cargo": {
-                "args": [
-                    "build",
+                    "--bin=rnotes_cli",
                     "--package=rnotes_cli"
                 ],
+                "filter": {
+                    "name": "rnotes_cli",
+                    "kind": "bin"
+                }
             },
-            "args": [
-            ],
+            "args": [],
             "cwd": "${workspaceFolder}"
         },
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in library 'rnotes_core'",
+            "name": "Debug executable 'rnotes_server'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=rnotes_server",
+                    "--package=rnotes_server"
+                ],
+                "filter": {
+                    "name": "rnotes_server",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'handlers_auth'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=handlers_auth",
+                    "--package=rnotes_server"
+                ],
+                "filter": {
+                    "name": "handlers_auth",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'handlers_categories'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=handlers_categories",
+                    "--package=rnotes_server"
+                ],
+                "filter": {
+                    "name": "handlers_categories",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'handlers_notes'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=handlers_notes",
+                    "--package=rnotes_server"
+                ],
+                "filter": {
+                    "name": "handlers_notes",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'lib'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=lib",
+                    "--package=rnotes-core"
+                ],
+                "filter": {
+                    "name": "lib",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'models_category'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=models_category",
+                    "--package=rnotes-core"
+                ],
+                "filter": {
+                    "name": "models_category",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'models_note'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=models_note",
+                    "--package=rnotes-core"
+                ],
+                "filter": {
+                    "name": "models_note",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'models_user'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=models_user",
+                    "--package=rnotes-core"
+                ],
+                "filter": {
+                    "name": "models_user",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'rnotes_cli'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=rnotes_cli",
+                    "--package=rnotes_cli"
+                ],
+                "filter": {
+                    "name": "rnotes_cli",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'rnotes_server'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=rnotes_server",
+                    "--package=rnotes_server"
+                ],
+                "filter": {
+                    "name": "rnotes_server",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'rnotes-core'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
                     "--lib",
-                    "--package=rnotes_core"
+                    "--package=rnotes-core"
                 ],
                 "filter": {
-                    "name": "rnotes_core",
+                    "name": "rnotes-core",
                     "kind": "lib"
                 }
             },
@@ -63,7 +239,7 @@
                     "--package=rnotes_server"
                 ],
                 "filter": {
-                    "name": "rnotes_core",
+                    "name": "rnotes_server",
                     "kind": "lib"
                 }
             },
@@ -73,18 +249,25 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug integration test 'lib'",
+            "name": "Debug rnotes_server",
             "cargo": {
                 "args": [
-                    "test",
-                    "--no-run",
-                    "--test=lib",
-                    "--package=rnotes_core"
+                    "build",
+                    "--package=rnotes_server"
                 ],
-                "filter": {
-                    "name": "lib",
-                    "kind": "test"
-                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug rnotes_cli",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--package=rnotes_cli"
+                ],
             },
             "args": [],
             "cwd": "${workspaceFolder}"

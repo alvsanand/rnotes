@@ -85,3 +85,12 @@ pub fn get_session_time() -> u64 {
         .parse::<u64>()
         .expect("JWT_SESSION_TIME must be an number")
 }
+
+#[test]
+fn test_read_token() {
+    let token = "eyJ0eXAiOiJKV1QiLCJraWQiOm51bGwsImFsZyI6IkhTMjU2In0.eyJpc3MiOm51bGwsInN1YiI6IjEiLCJhdWQiOm51bGwsImV4cCI6MTU4NzAyNzkyNSwibmJmIjpudWxsLCJpYXQiOjE1ODcwMjQzMjUsImp0aSI6bnVsbH0.AN8RMyD8pHcMOft+LxXsLu1cTOKiEWk2mC6YYu6pDKw";
+
+    let result = read_token(token);
+
+    assert!(result.is_ok());
+}

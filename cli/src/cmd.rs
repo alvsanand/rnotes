@@ -415,3 +415,244 @@ pub fn parse_command(_tokens: Vec<String>) -> Result<Command, Error> {
         }
     }
 }
+
+mod tests {
+    #[allow(unused_imports)]
+    use super::*;
+    #[test]
+    fn test_parse_commands() {
+        {
+            let help_commands: Vec<Vec<String>> = vec![
+                vec!["help".to_string()],
+                vec!["help".to_string(), "auth".to_string()],
+                vec!["help".to_string(), "auth".to_string(), "login".to_string()],
+                vec!["help".to_string(), "categories".to_string()],
+                vec![
+                    "help".to_string(),
+                    "categories".to_string(),
+                    "all".to_string(),
+                ],
+                vec![
+                    "help".to_string(),
+                    "categories".to_string(),
+                    "get".to_string(),
+                ],
+                vec!["help".to_string(), "notes".to_string()],
+                vec!["help".to_string(), "notes".to_string(), "all".to_string()],
+                vec!["help".to_string(), "notes".to_string(), "get".to_string()],
+                vec![
+                    "help".to_string(),
+                    "notes".to_string(),
+                    "create".to_string(),
+                ],
+                vec![
+                    "help".to_string(),
+                    "notes".to_string(),
+                    "update".to_string(),
+                ],
+                vec![
+                    "help".to_string(),
+                    "notes".to_string(),
+                    "delete".to_string(),
+                ],
+            ];
+            for tokens in help_commands {
+                match parse_command(tokens) {
+                    Ok(Command::Help(_)) => {}
+                    _ => panic!("Unexpected response"),
+                }
+            }
+        }
+        {
+            let tokens = vec!["auth".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec!["auth".to_string(), "login".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec![
+                "auth".to_string(),
+                "login".to_string(),
+                "aaa".to_string(),
+                "bbb".to_string(),
+            ];
+            match parse_command(tokens) {
+                Ok(Command::Auth(AuthCommand::Login(login_in))) => {
+                    assert_eq!(login_in.email, "aaa");
+                    assert_eq!(login_in.password, "bbb");
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec!["categories".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec!["categories".to_string(), "all".to_string()];
+            match parse_command(tokens) {
+                Ok(Command::Categories(CategoriesCommand::All)) => {}
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec!["categories".to_string(), "get".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec![
+                "categories".to_string(),
+                "get".to_string(),
+                "123".to_string(),
+            ];
+            match parse_command(tokens) {
+                Ok(Command::Categories(CategoriesCommand::Get(id))) => {
+                    assert_eq!(id.to_string(), "123");
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string(), "all".to_string()];
+            match parse_command(tokens) {
+                Ok(Command::Notes(NotesCommand::All)) => {}
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string(), "get".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string(), "get".to_string(), "123".to_string()];
+            match parse_command(tokens) {
+                Ok(Command::Notes(NotesCommand::Get(id))) => {
+                    assert_eq!(id.to_string(), "123");
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string(), "create".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec![
+                "notes".to_string(),
+                "create".to_string(),
+                "some_title".to_string(),
+                "some_data".to_string(),
+            ];
+            match parse_command(tokens) {
+                Ok(Command::Notes(NotesCommand::Create(note_in))) => {
+                    assert_eq!(note_in.title, "some_title");
+                    assert_eq!(note_in.data, "some_data".to_string());
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec![
+                "notes".to_string(),
+                "create".to_string(),
+                "some_title".to_string(),
+                "some_data".to_string(),
+                "123".to_string(),
+            ];
+            match parse_command(tokens) {
+                Ok(Command::Notes(NotesCommand::Create(note_in))) => {
+                    assert_eq!(note_in.title, "some_title");
+                    assert_eq!(note_in.data, "some_data".to_string());
+                    assert_eq!(note_in.category_id, Some(123));
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string(), "update".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec![
+                "notes".to_string(),
+                "update".to_string(),
+                "123".to_string(),
+                "some_title".to_string(),
+                "some_data".to_string(),
+            ];
+            match parse_command(tokens) {
+                Ok(Command::Notes(NotesCommand::Update(id, note_in))) => {
+                    assert_eq!(id, 123);
+                    assert_eq!(note_in.title, "some_title");
+                    assert_eq!(note_in.data, "some_data".to_string());
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec![
+                "notes".to_string(),
+                "update".to_string(),
+                "123".to_string(),
+                "some_title".to_string(),
+                "some_data".to_string(),
+                "456".to_string(),
+            ];
+            match parse_command(tokens) {
+                Ok(Command::Notes(NotesCommand::Update(id, note_in))) => {
+                    assert_eq!(id, 123);
+                    assert_eq!(note_in.title, "some_title");
+                    assert_eq!(note_in.data, "some_data".to_string());
+                    assert_eq!(note_in.category_id, Some(456));
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string(), "delete".to_string()];
+            match parse_command(tokens) {
+                Ok(_) => panic!("Unexpected response"),
+                _ => {}
+            }
+        }
+        {
+            let tokens = vec!["notes".to_string(), "delete".to_string(), "123".to_string()];
+            match parse_command(tokens) {
+                Ok(Command::Notes(NotesCommand::Delete(id))) => {
+                    assert_eq!(id.to_string(), "123");
+                }
+                _ => panic!("Unexpected response"),
+            }
+        }
+    }
+}

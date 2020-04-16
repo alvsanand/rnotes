@@ -13,7 +13,7 @@ use std::io::Cursor;
 use rnotes_core::models::api::Error;
 
 pub mod auth;
-pub mod category;
+pub mod categories;
 pub mod jwt;
 pub mod notes;
 
@@ -57,8 +57,8 @@ pub fn status_error<'r>(status: Status, error: String) -> StatusError<'r> {
 
 #[derive(Debug)]
 pub struct ApiResponse<T> {
-    json: Option<Json<T>>,
-    status: Status,
+    pub json: Option<Json<T>>,
+    pub status: Status,
 }
 
 impl<T: Serialize> ApiResponse<T> {

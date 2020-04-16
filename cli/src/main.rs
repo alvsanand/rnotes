@@ -34,5 +34,7 @@ async fn main() {
     let client = http_client::HttpClient::new();
     let mut runner = run::Runner::new(opt.server, client);
 
+    ui::print_info();
+
     ui::ui_loop(&mut runner).await;
 }

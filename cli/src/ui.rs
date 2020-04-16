@@ -1,6 +1,7 @@
 use crate::cmd::*;
 use crate::run::Runner;
 use dirs;
+use figlet_rs::FIGfont;
 use rustyline::completion::Completer;
 use rustyline::config::CompletionType;
 use rustyline::error::ReadlineError;
@@ -60,6 +61,16 @@ impl Hinter for CmdHelper {
         candidates.sort();
         candidates.first().map(|s| String::from(s))
     }
+}
+
+pub fn print_info() {
+    let standard_font = FIGfont::standand().unwrap();
+    println!("########################################################################");
+    println!(
+        "{}",
+        standard_font.convert("rnotes-cli").expect("Unknown error")
+    );
+    println!("########################################################################");
 }
 
 pub async fn ui_loop(runner: &mut Runner) {

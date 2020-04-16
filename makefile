@@ -31,3 +31,10 @@ test: build docker_compose_up
 	@RUST_TEST_THREADS=1 cargo test --workspace && RESULT=0 || RESULT=1; \
 	 $(MAKE) docker_compose_down; \
 	 exit $$RESULT
+
+coverage: build docker_compose_up
+	@command -v tarpaulin > /dev/null 2>&1 || cargo install cargo-tarpaulin; \
+	 RUST_TEST_THREADS=1 cargo tarpaulin --exclude-files .history -v && RESULT=0 || RESULT=1; \
+	 $(MAKE) docker_compose_down; \
+	 exit $$RESULT
+	

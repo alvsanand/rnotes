@@ -30,7 +30,7 @@ pub fn get<'r>(
 }
 
 #[post("/", format = "application/json", data = "<note_in>")]
-pub fn post<'r>(
+pub fn create<'r>(
     key: JWTKey,
     connection: DBConn,
     note_in: Json<NoteIn>,
@@ -44,7 +44,7 @@ pub fn post<'r>(
 }
 
 #[put("/<id>", format = "application/json", data = "<note_in>")]
-pub fn put<'r>(
+pub fn update<'r>(
     key: JWTKey,
     connection: DBConn,
     id: i32,

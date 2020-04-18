@@ -62,11 +62,11 @@ pub fn cmd_hints() -> HashSet<String> {
     set
 }
 
-fn clean_help(help_str: String, cmd: Option<String>, srv: Option<String>) -> String {
+fn clean_help(help_str: &str, cmd: Option<&str>, srv: Option<&str>) -> String {
     let tmp = if let Some(idx) = help_str.find("\n") {
         help_str.split_at(idx).1.to_string()
     } else {
-        help_str.clone()
+        String::from(help_str)
     };
     if cmd.is_some() && srv.is_some() {
         tmp.replace(
@@ -90,7 +90,7 @@ fn clean_help(help_str: String, cmd: Option<String>, srv: Option<String>) -> Str
     }
 }
 
-fn get_help(clap: &App, command: Option<String>, service: Option<String>) -> String {
+fn get_help(clap: &App, command: Option<&str>, service: Option<&str>) -> String {
     use std::io::{Cursor, Read, Seek, SeekFrom};
     use std::str::from_utf8;
 
@@ -102,7 +102,7 @@ fn get_help(clap: &App, command: Option<String>, service: Option<String>) -> Str
     buf.seek(SeekFrom::Start(0)).unwrap();
     buf.read_to_end(&mut help_messages).unwrap();
 
-    let raw_help = from_utf8(&help_messages).unwrap().to_string();
+    let raw_help = from_utf8(&help_messages).unwrap();
     clean_help(raw_help, command, service)
 }
 
@@ -111,13 +111,12 @@ fn clean_error(error: String) -> String {
         error
             .split_at(idx)
             .0
-            .to_string()
             .replace("cmd ", "")
             .replace("SUBCOMMAND", "SERVICE")
             .trim()
             .to_string()
     } else {
-        error.clone().replace("cmd ", "").trim().to_string()
+        error.replace("cmd ", "").trim().to_string()
     }
 }
 
@@ -261,7 +260,7 @@ pub fn parse_command(_tokens: Vec<String>) -> Result<Command, Error> {
         None
     };
 
-    let mut tokens = vec!["cmd".to_string()];
+    let mut tokens = vec!["cmd".to_owned()];
     tokens.extend(_tokens);
 
     match MainOpt::from_iter_safe(tokens.clone()) {
@@ -299,17 +298,17 @@ pub fn parse_command(_tokens: Vec<String>) -> Result<Command, Error> {
             (Some(service), None) => match &*service {
                 "auth" => Ok(Command::Help(get_help(
                     &AuthOpt::clap(),
-                    Some("auth".to_string()),
+                    Some("auth"),
                     None,
                 ))),
                 "categories" => Ok(Command::Help(get_help(
                     &CategoriesOpt::clap(),
-                    Some("categories".to_string()),
+                    Some("categories"),
                     None,
                 ))),
                 "notes" => Ok(Command::Help(get_help(
                     &NotesOpt::clap(),
-                    Some("notes".to_string()),
+                    Some("notes"),
                     None,
                 ))),
                 _ => Err(Error::Parse(format!(
@@ -321,8 +320,8 @@ pub fn parse_command(_tokens: Vec<String>) -> Result<Command, Error> {
                 "auth" => match &*command {
                     "login" => Ok(Command::Help(get_help(
                         &AuthLoginOpt::clap(),
-                        Some("auth".to_string()),
-                        Some("login".to_string()),
+                        Some("auth"),
+                        Some("login"),
                     ))),
                     _ => Err(Error::Parse(format!(
                         "error: command '{}' for service '{}' is not valid.",
@@ -332,13 +331,13 @@ pub fn parse_command(_tokens: Vec<String>) -> Result<Command, Error> {
                 "categories" => match &*command {
                     "all" => Ok(Command::Help(get_help(
                         &CategoriesAllOpt::clap(),
-                        Some("categories".to_string()),
-                        Some("all".to_string()),
+                        Some("categories"),
+                        Some("all"),
                     ))),
                     "get" => Ok(Command::Help(get_help(
                         &CategoriesGetOpt::clap(),
-                        Some("categories".to_string()),
-                        Some("get".to_string()),
+                        Some("categories"),
+                        Some("get"),
                     ))),
                     _ => Err(Error::Parse(format!(
                         "error: command '{}' for service '{}' is not valid.",
@@ -348,28 +347,28 @@ pub fn parse_command(_tokens: Vec<String>) -> Result<Command, Error> {
                 "notes" => match &*command {
                     "all" => Ok(Command::Help(get_help(
                         &NotesAllOpt::clap(),
-                        Some("notes".to_string()),
-                        Some("all".to_string()),
+                        Some("notes"),
+                        Some("all"),
                     ))),
                     "get" => Ok(Command::Help(get_help(
                         &NotesGetOpt::clap(),
-                        Some("notes".to_string()),
-                        Some("get".to_string()),
+                        Some("notes"),
+                        Some("get"),
                     ))),
                     "create" => Ok(Command::Help(get_help(
                         &NotesCreateOpt::clap(),
-                        Some("notes".to_string()),
-                        Some("create".to_string()),
+                        Some("notes"),
+                        Some("create"),
                     ))),
                     "update" => Ok(Command::Help(get_help(
                         &NotesUpdateOpt::clap(),
-                        Some("notes".to_string()),
-                        Some("update".to_string()),
+                        Some("notes"),
+                        Some("update"),
                     ))),
                     "delete" => Ok(Command::Help(get_help(
                         &NotesDeleteOpt::clap(),
-                        Some("notes".to_string()),
-                        Some("delete".to_string()),
+                        Some("notes"),
+                        Some("delete"),
                     ))),
                     _ => Err(Error::Parse(format!(
                         "error: command '{}' for service '{}' is not valid.",
@@ -422,69 +421,44 @@ mod tests {
     #[test]
     fn test_parse_commands() {
         {
-            let help_commands: Vec<Vec<String>> = vec![
-                vec!["help".to_string()],
-                vec!["help".to_string(), "auth".to_string()],
-                vec!["help".to_string(), "auth".to_string(), "login".to_string()],
-                vec!["help".to_string(), "categories".to_string()],
-                vec![
-                    "help".to_string(),
-                    "categories".to_string(),
-                    "all".to_string(),
-                ],
-                vec![
-                    "help".to_string(),
-                    "categories".to_string(),
-                    "get".to_string(),
-                ],
-                vec!["help".to_string(), "notes".to_string()],
-                vec!["help".to_string(), "notes".to_string(), "all".to_string()],
-                vec!["help".to_string(), "notes".to_string(), "get".to_string()],
-                vec![
-                    "help".to_string(),
-                    "notes".to_string(),
-                    "create".to_string(),
-                ],
-                vec![
-                    "help".to_string(),
-                    "notes".to_string(),
-                    "update".to_string(),
-                ],
-                vec![
-                    "help".to_string(),
-                    "notes".to_string(),
-                    "delete".to_string(),
-                ],
+            let help_commands: Vec<Vec<&str>> = vec![
+                vec!["help"],
+                vec!["help", "auth"],
+                vec!["help", "auth", "login"],
+                vec!["help", "categories"],
+                vec!["help", "categories", "all"],
+                vec!["help", "categories", "get"],
+                vec!["help", "notes"],
+                vec!["help", "notes", "all"],
+                vec!["help", "notes", "get"],
+                vec!["help", "notes", "create"],
+                vec!["help", "notes", "update"],
+                vec!["help", "notes", "delete"],
             ];
             for tokens in help_commands {
-                match parse_command(tokens) {
+                match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                     Ok(Command::Help(_)) => {}
                     _ => panic!("Unexpected response"),
                 }
             }
         }
         {
-            let tokens = vec!["auth".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["auth"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec!["auth".to_string(), "login".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["auth", "login"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec![
-                "auth".to_string(),
-                "login".to_string(),
-                "aaa".to_string(),
-                "bbb".to_string(),
-            ];
-            match parse_command(tokens) {
+            let tokens = vec!["auth", "login", "aaa", "bbb"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Auth(AuthCommand::Login(login_in))) => {
                     assert_eq!(login_in.email, "aaa");
                     assert_eq!(login_in.password, "bbb");
@@ -493,33 +467,29 @@ mod tests {
             }
         }
         {
-            let tokens = vec!["categories".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["categories"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec!["categories".to_string(), "all".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["categories", "all"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Categories(CategoriesCommand::All)) => {}
                 _ => panic!("Unexpected response"),
             }
         }
         {
-            let tokens = vec!["categories".to_string(), "get".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["categories", "get"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec![
-                "categories".to_string(),
-                "get".to_string(),
-                "123".to_string(),
-            ];
-            match parse_command(tokens) {
+            let tokens = vec!["categories", "get", "123"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Categories(CategoriesCommand::Get(id))) => {
                     assert_eq!(id.to_string(), "123");
                 }
@@ -527,29 +497,29 @@ mod tests {
             }
         }
         {
-            let tokens = vec!["notes".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec!["notes".to_string(), "all".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "all"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Notes(NotesCommand::All)) => {}
                 _ => panic!("Unexpected response"),
             }
         }
         {
-            let tokens = vec!["notes".to_string(), "get".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "get"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec!["notes".to_string(), "get".to_string(), "123".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "get", "123"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Notes(NotesCommand::Get(id))) => {
                     assert_eq!(id.to_string(), "123");
                 }
@@ -557,97 +527,73 @@ mod tests {
             }
         }
         {
-            let tokens = vec!["notes".to_string(), "create".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "create"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec![
-                "notes".to_string(),
-                "create".to_string(),
-                "some_title".to_string(),
-                "some_data".to_string(),
-            ];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "create", "some_title", "some_data"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Notes(NotesCommand::Create(note_in))) => {
                     assert_eq!(note_in.title, "some_title");
-                    assert_eq!(note_in.data, "some_data".to_string());
+                    assert_eq!(note_in.data, "some_data");
                 }
                 _ => panic!("Unexpected response"),
             }
         }
         {
-            let tokens = vec![
-                "notes".to_string(),
-                "create".to_string(),
-                "some_title".to_string(),
-                "some_data".to_string(),
-                "123".to_string(),
-            ];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "create", "some_title", "some_data", "123"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Notes(NotesCommand::Create(note_in))) => {
                     assert_eq!(note_in.title, "some_title");
-                    assert_eq!(note_in.data, "some_data".to_string());
+                    assert_eq!(note_in.data, "some_data");
                     assert_eq!(note_in.category_id, Some(123));
                 }
                 _ => panic!("Unexpected response"),
             }
         }
         {
-            let tokens = vec!["notes".to_string(), "update".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "update"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec![
-                "notes".to_string(),
-                "update".to_string(),
-                "123".to_string(),
-                "some_title".to_string(),
-                "some_data".to_string(),
-            ];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "update", "123", "some_title", "some_data"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Notes(NotesCommand::Update(id, note_in))) => {
                     assert_eq!(id, 123);
                     assert_eq!(note_in.title, "some_title");
-                    assert_eq!(note_in.data, "some_data".to_string());
+                    assert_eq!(note_in.data, "some_data");
                 }
                 _ => panic!("Unexpected response"),
             }
         }
         {
-            let tokens = vec![
-                "notes".to_string(),
-                "update".to_string(),
-                "123".to_string(),
-                "some_title".to_string(),
-                "some_data".to_string(),
-                "456".to_string(),
-            ];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "update", "123", "some_title", "some_data", "456"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Notes(NotesCommand::Update(id, note_in))) => {
                     assert_eq!(id, 123);
                     assert_eq!(note_in.title, "some_title");
-                    assert_eq!(note_in.data, "some_data".to_string());
+                    assert_eq!(note_in.data, "some_data");
                     assert_eq!(note_in.category_id, Some(456));
                 }
                 _ => panic!("Unexpected response"),
             }
         }
         {
-            let tokens = vec!["notes".to_string(), "delete".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "delete"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(_) => panic!("Unexpected response"),
                 _ => {}
             }
         }
         {
-            let tokens = vec!["notes".to_string(), "delete".to_string(), "123".to_string()];
-            match parse_command(tokens) {
+            let tokens = vec!["notes", "delete", "123"];
+            match parse_command(tokens.iter().map(|s| s.to_string()).collect()) {
                 Ok(Command::Notes(NotesCommand::Delete(id))) => {
                     assert_eq!(id.to_string(), "123");
                 }

@@ -1,6 +1,6 @@
 [package]
 name = "rnotes_server"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Alvaro Santos Andres <alvsanand@gmail.com>"]
 edition = "2018"
 

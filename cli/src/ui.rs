@@ -1,5 +1,8 @@
 use crate::cmd::*;
+use crate::http_client::HttpClient;
 use crate::run::Runner;
+use crate::CLIOpt;
+use crate::GenericError;
 use dirs;
 use figlet_rs::FIGfont;
 use rustyline::completion::Completer;
@@ -10,6 +13,8 @@ use rustyline::{Cmd, Config, Editor, KeyPress};
 use rustyline_derive::{Helper, Highlighter, Validator};
 use shell_words;
 use std::collections::HashSet;
+use std::io::{self, Write};
+use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 
 #[derive(Helper, Validator, Highlighter)]
 struct CmdHelper {
@@ -73,7 +78,7 @@ pub fn print_info() {
     println!("########################################################################");
 }
 
-pub async fn ui_loop(runner: &mut Runner) {
+pub async fn ui_loop(opt: CLIOpt) -> Result<(), GenericError> {
     let ref history_file = format!(
         "{}/.rnotes_cli.history",
         dirs::home_dir().unwrap().to_str().unwrap()
@@ -91,6 +96,13 @@ pub async fn ui_loop(runner: &mut Runner) {
     rl.bind_sequence(KeyPress::Tab, Cmd::Complete);
     rl.load_history(history_file).unwrap_or_default();
 
+    let (in_tx, in_rx) = unbounded_channel();
+    let (out_tx, mut out_rx) = unbounded_channel();
+
+    let progress_chars = vec!["-", "\\", "|", "/"];
+
+    tokio::spawn(runner_task(opt, in_rx, out_tx));
+
     loop {
         let readline = rl.readline("rnotes_cli>> ");
         match readline {
@@ -99,7 +111,27 @@ pub async fn ui_loop(runner: &mut Runner) {
                 match parse_line(&line) {
                     Ok(Command::Nothing) => (),
                     Ok(cmd) => {
-                        runner.run(cmd).await;
+                        in_tx.send(cmd)?;
+                        let mut x = 0;
+                        loop {
+                            match out_rx.try_recv() {
+                                Ok(msg) => {
+                                    println!("{}", msg);
+                                    break;
+                                }
+                                Err(_) => {
+                                    print!("Executing command {}", progress_chars[x % 4]);
+                                    io::stdout().flush()?;
+
+                                    std::thread::sleep(std::time::Duration::from_millis(250));
+
+                                    print!("\r");
+                                    io::stdout().flush()?;
+
+                                    x = x + 1;
+                                }
+                            }
+                        }
                     }
                     Err(Error::Exit) => {
                         break;
@@ -127,6 +159,24 @@ pub async fn ui_loop(runner: &mut Runner) {
     if rl.save_history(history_file).is_err() {
         println!("Error saving history file {}", history_file);
     }
+
+    Ok(())
+}
+
+async fn runner_task(
+    opt: CLIOpt,
+    mut rx: UnboundedReceiver<Command>,
+    tx: UnboundedSender<String>,
+) -> Result<(), GenericError> {
+    let client = HttpClient::new();
+
+    let mut runner = Runner::new(opt.server, client);
+
+    while let Some(cmd) = rx.recv().await {
+        tx.send(runner.run(cmd).await)?;
+    }
+
+    Ok(())
 }
 
 fn parse_line(buf: &String) -> Result<Command, Error> {

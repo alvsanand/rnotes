@@ -18,23 +18,24 @@ mod ui;
 
 use structopt::StructOpt;
 
+type GenericError = Box<dyn std::error::Error + Send + Sync>;
+
 #[derive(StructOpt, Debug)]
 #[structopt(name = "rnotes_cli")]
 /// rnotes command line client
-struct CLIOpt {
+pub struct CLIOpt {
     /// http://{HOSTNAME}:{PORT} of rnotes server
     #[structopt(name = "SERVER", default_value = "http://localhost:8080")]
     server: String,
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), GenericError> {
     let opt = CLIOpt::from_args();
-
-    let client = http_client::HttpClient::new();
-    let mut runner = run::Runner::new(opt.server, client);
 
     ui::print_info();
 
-    ui::ui_loop(&mut runner).await;
+    ui::ui_loop(opt).await?;
+
+    Ok(())
 }

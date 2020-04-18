@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - No new changes at the moment
 
+## [0.4.0] - 12-04-2020
+
+### Added
+
+- rnotes_cli is now async.
+
+### Changed
+
+- Re-factorized several String and &str situations.
+
 ## [0.3.1] - 12-04-2020
 
 ### Fixed

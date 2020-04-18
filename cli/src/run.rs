@@ -1,9 +1,9 @@
 use crate::cmd::*;
 use crate::http_client::HttpClient;
-use rnotes_core::models::api::Empty;
 use rnotes_core::models::api::auth::*;
 use rnotes_core::models::api::category::CategoryOut;
 use rnotes_core::models::api::note::*;
+use rnotes_core::models::api::Empty;
 use rnotes_core::utils::HexSlice;
 use sha2::{Digest, Sha256};
 
@@ -22,11 +22,9 @@ impl Runner {
         }
     }
 
-    pub async fn run(&mut self, cmd: Command) {
+    pub async fn run(&mut self, cmd: Command) -> String {
         match cmd {
-            Command::Help(message) => {
-                println!("{}", message);
-            }
+            Command::Help(message) => format!("{}", message),
             Command::Auth(AuthCommand::Login(mut login_in)) => {
                 let url = format!("{server}/auth/login", server = self.server_url);
 
@@ -43,11 +41,9 @@ impl Runner {
                 {
                     Ok(login_out) => {
                         self.jwt_token = Some(login_out.jwt_token);
-                        println!("Login successful to rnotes server.");
+                        format!("Login successful to rnotes server.")
                     }
-                    Err(err) => {
-                        println!("Failed 'auth login'. {err}", err = err);
-                    }
+                    Err(err) => format!("Failed 'auth login'. {err}", err = err),
                 }
             }
             Command::Categories(CategoriesCommand::All) => {
@@ -58,12 +54,8 @@ impl Runner {
                     .get::<Vec<CategoryOut>>(url, self.jwt_token.clone())
                     .await
                 {
-                    Ok(response) => {
-                        println!("{:?}", response);
-                    }
-                    Err(err) => {
-                        println!("Failed 'categories all'. {err}", err = err);
-                    }
+                    Ok(response) => format!("{:?}", response),
+                    Err(err) => format!("Failed 'categories all'. {err}", err = err),
                 }
             }
             Command::Categories(CategoriesCommand::Get(id)) => {
@@ -78,12 +70,8 @@ impl Runner {
                     .get::<CategoryOut>(url, self.jwt_token.clone())
                     .await
                 {
-                    Ok(response) => {
-                        println!("{:?}", response);
-                    }
-                    Err(err) => {
-                        println!("Failed 'categories get {id}'. {err}", id = id, err = err);
-                    }
+                    Ok(response) => format!("{:?}", response),
+                    Err(err) => format!("Failed 'categories get {id}'. {err}", id = id, err = err),
                 }
             }
             Command::Notes(NotesCommand::All) => {
@@ -94,12 +82,8 @@ impl Runner {
                     .get::<Vec<NoteOut>>(url, self.jwt_token.clone())
                     .await
                 {
-                    Ok(response) => {
-                        println!("{:?}", response);
-                    }
-                    Err(err) => {
-                        println!("Failed 'notes all'. {}", err);
-                    }
+                    Ok(response) => format!("{:?}", response),
+                    Err(err) => format!("Failed 'notes all'. {}", err),
                 }
             }
             Command::Notes(NotesCommand::Get(id)) => {
@@ -110,12 +94,8 @@ impl Runner {
                     .get::<NoteOut>(url, self.jwt_token.clone())
                     .await
                 {
-                    Ok(response) => {
-                        println!("{:?}", response);
-                    }
-                    Err(err) => {
-                        println!("Failed 'notes get {id}'. {err}", id = id, err = err);
-                    }
+                    Ok(response) => format!("{:?}", response),
+                    Err(err) => format!("Failed 'notes get {id}'. {err}", id = id, err = err),
                 }
             }
             Command::Notes(NotesCommand::Create(note)) => {
@@ -126,12 +106,8 @@ impl Runner {
                     .post::<NoteIn, NoteOut>(url, &note, self.jwt_token.clone())
                     .await
                 {
-                    Ok(response) => {
-                        println!("{:?}", response);
-                    }
-                    Err(err) => {
-                        println!("Failed 'notes create ...'. {err}", err = err);
-                    }
+                    Ok(response) => format!("{:?}", response),
+                    Err(err) => format!("Failed 'notes create ...'. {err}", err = err),
                 }
             }
             Command::Notes(NotesCommand::Update(id, note)) => {
@@ -142,11 +118,9 @@ impl Runner {
                     .put::<NoteIn, NoteOut>(url, &note, self.jwt_token.clone())
                     .await
                 {
-                    Ok(response) => {
-                        println!("{:?}", response);
-                    }
+                    Ok(response) => format!("{:?}", response),
                     Err(err) => {
-                        println!("Failed 'notes update {id} ...'. {err}", id = id, err = err);
+                        format!("Failed 'notes update {id} ...'. {err}", id = id, err = err)
                     }
                 }
             }
@@ -158,17 +132,11 @@ impl Runner {
                     .delete::<Empty>(url, self.jwt_token.clone())
                     .await
                 {
-                    Ok(response) => {
-                        println!("{:?}", response);
-                    }
-                    Err(err) => {
-                        println!("Failed 'notes delete {id}'. {err}", id = id, err = err);
-                    }
+                    Ok(response) => format!("{:?}", response),
+                    Err(err) => format!("Failed 'notes delete {id}'. {err}", id = id, err = err),
                 }
             }
-            other => {
-                println!("Received {:?}", other);
-            }
+            other => format!("Received {:?}", other),
         }
     }
 }

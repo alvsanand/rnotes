@@ -1,6 +1,6 @@
 [package]
 name = "rnotes-core"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Alvaro Santos Andres <alvsanand@gmail.com>"]
 edition = "2018"
 

@@ -1,7 +1,7 @@
 use crate::cmd::*;
 use crate::http_client::HttpClient;
 use crate::run::Runner;
-use crate::CLIOpt;
+use crate::CliOpt;
 use crate::GenericError;
 use dirs;
 use figlet_rs::FIGfont;
@@ -78,7 +78,7 @@ pub fn print_info() {
     println!("########################################################################");
 }
 
-pub async fn ui_loop(opt: CLIOpt) -> Result<(), GenericError> {
+pub async fn ui_loop(opt: CliOpt) -> Result<(), GenericError> {
     let ref history_file = format!(
         "{}/.rnotes_cli.history",
         dirs::home_dir().unwrap().to_str().unwrap()
@@ -164,7 +164,7 @@ pub async fn ui_loop(opt: CLIOpt) -> Result<(), GenericError> {
 }
 
 async fn runner_task(
-    opt: CLIOpt,
+    opt: CliOpt,
     mut rx: UnboundedReceiver<Command>,
     tx: UnboundedSender<String>,
 ) -> Result<(), GenericError> {

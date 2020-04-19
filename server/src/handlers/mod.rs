@@ -102,3 +102,8 @@ impl<'r, T: Serialize> Responder<'r> for ApiResponse<T> {
         }
     }
 }
+
+#[get("/")]
+pub fn index() -> &'static str {
+    "rnotes server!"
+}

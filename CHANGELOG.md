@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - No new changes at the moment
 
-## [0.4.0] - 12-04-2020
+## [0.5.0] - 19-04-2020
+
+### Changed
+
+- Refactorized cli and server main.rs.
+
+## [0.4.0] - 18-04-2020
 
 ### Added
 

@@ -1,12 +1,16 @@
 # rnotes
 
-RNotes is a simple notes service written in Rust that has been as a "graduation" project for my learning of the fantastic [Rust language](https://rust-lang.org/).
+RNotes is a simple notes service written in Rust that developed as a "graduation" project for my learning path to [Rust language](https://rust-lang.org/).
+
+![Rust](https://www.rust-lang.org/logos/rust-logo-blk.svg) ![Ferris](https://mir-s3-cdn-cf.behance.net/project_modules/disp/7df0bd42774743.57ee5f32bd76e.gif)
 
 It is consist of three modules:
 
 - rnotes_core: which contains de DB and API models.
 - rnotes_server: the API server that process the request of the notes services.
 - rnotes_cli: a command line client for the rnotes services.
+
+(*) Although I have made a big effort to follow the best practices of RUST language, you could find many bug and unrecommended patterns. So try to be gentle with my code :laughing:.
 
 ## Development
 
